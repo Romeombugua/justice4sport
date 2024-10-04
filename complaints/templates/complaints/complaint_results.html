@@ -6,33 +6,46 @@
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px;">
 
-    <h1 style="color: #333;">Complaint Results</h1>
+    <h1>Complaint Results</h1>
 
-    <h2 style="color: #333;">Complaint Category: <span style="color: #007BFF;">{{ complaint_category }}</span></h2>
+    <h2>Complaint Category: {{ complaint_category }}</h2>
 
-    <h3 style="color: #333;">Similar Cases:</h3>
+    <h3>Similar Cases:</h3>
     {% if similar_cases %}
-        <ul style="list-style-type: disc; padding-left: 20px;">
+        <ul>
         {% for case in similar_cases %}
-            <li style="margin-bottom: 5px; color: #555;">{{ case.case_summary }}</li>
+            <li>{{ case.case_summary }}</li>
         {% endfor %}
         </ul>
     {% else %}
-        <p style="color: #FF0000;">No similar cases found.</p>
+        <p>No similar cases found.</p>
     {% endif %}
 
-    <h3 style="color: #333;">Breaches:</h3>
+    <h3>Breaches Detected:</h3>
     {% if breaches %}
-        <ul style="list-style-type: circle; padding-left: 20px;">
+        <ul>
         {% for breach in breaches %}
-            <li style="margin-bottom: 5px; color: #555;">{{ breach }}</li>
+            <li>{{ breach }}</li>
         {% endfor %}
         </ul>
     {% else %}
-        <p style="color: #FF0000;">No breaches found.</p>
+        <p>No breaches found.</p>
     {% endif %}
 
-    <p><strong>Original Complaint Text:</strong> <span style="color: #555;">{{ complaint_text }}</span></p>
+    <h3>Complaint Text:</h3>
+    <p>{{ complaint_text }}</p>
+
+    <h3>Download Populated Form:</h3>
+    <a id="downloadLink" href="{% url 'download_form' populated_form_path %}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+        Download Form
+    </a>
+
+    <script>
+        // Automatically trigger the download once the page loads
+        window.onload = function() {
+            document.getElementById('downloadLink').click();
+        };
+    </script>
 
 </body>
 </html>

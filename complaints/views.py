@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from .models import PastCase
 from .forms import ComplaintForm
 from django.db.models import Q
@@ -125,27 +125,27 @@ def submit_complaint(request):
 
             similar_cases = find_similar_cases(complaint_category, complaint_text)
             breaches = check_for_breaches(complaint_text)
+
             # Populate the appropriate complaint form
             populated_form_path = populate_complaint_form(complaint_category, form_data, similar_cases)
-            if populated_form_path:
-                # Serve the document as a downloadable file
-                with open(populated_form_path, 'rb') as f:
-                    response = HttpResponse(f.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-                    response['Content-Disposition'] = f'attachment; filename=populated_{complaint_category}_complaint_form.docx'
-                    return response
-            else:
-                return render(request, 'complaints/error.html', {
-                    "error_message": "Error populating the complaint form."
-                })
-            # Render the results on a new page
+
+            # Render the results page, include path to the populated form
             return render(request, 'complaints/complaint_results.html', {
                 "complaint_category": complaint_category,
                 "similar_cases": similar_cases,
                 "breaches": breaches,
                 "complaint_text": complaint_text,
+                "populated_form_path": populated_form_path,  # Pass the path for the download
             })
     else:
         form = ComplaintForm()
 
     return render(request, 'complaints/submit_complaint.html', {'form': form})
 
+def download_form(request, file_path):
+    """Serve the populated form as a downloadable file."""
+    # Get the absolute path to the file in the media directory
+    file_path = os.path.join(settings.MEDIA_ROOT, file_path)
+
+    # Serve the document as a downloadable file
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=os.path.basename(file_path))
