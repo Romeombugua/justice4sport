@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { color: #333; }
+        .container { margin: 20px; }
+        .section { margin-bottom: 20px; }
+        label { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Barrister Complaint</h1>
+
+        <!-- Section 1: Who you're reporting -->
+        <div class="section">
+            <label>Name of Barrister/Chambers/Entity:</label> {{ form_data.barrister_name }}<br>
+            <label>Address 1:</label> {{ form_data.address1 }}<br>
+            <label>Address 2:</label> {{ form_data.address2 }}<br>
+            <label>Address 3:</label> {{ form_data.address3 }}<br>
+            <label>Postcode:</label> {{ form_data.postcode }}<br>
+            <label>Email:</label> {{ form_data.email }}<br>
+            <label>Phone Number:</label> {{ form_data.phone_number }}<br>
+        </div>
+
+        <!-- Section 2: Reporting more than one barrister -->
+        <div class="section">
+            <label>Is it about more than one barrister/chambers/entity/AETO?</label> {{ form_data.more_than_one }}<br>
+            <label>Second Barrister Name:</label> {{ form_data.second_barrister_name }}<br>
+            <label>Second Address 1:</label> {{ form_data.second_address1 }}<br>
+            <label>Second Address 2:</label> {{ form_data.second_address2 }}<br>
+            <label>Second Address 3:</label> {{ form_data.second_address3 }}<br>
+            <label>Second Postcode:</label> {{ form_data.second_postcode }}<br>
+            <label>Second Email:</label> {{ form_data.second_email }}<br>
+            <label>Second Phone Number:</label> {{ form_data.second_phone_number }}<br>
+        </div>
+
+        <!-- Section 3: Case-related information -->
+        <div class="section">
+            <label>Who was/is the barrister or entity acting for?</label> {{ form_data.acting_for }}<br>
+            <label>Does this relate to any other report made to the BSB?</label> {{ form_data.related_to_previous_report }}<br>
+            <label>Reference Number:</label> {{ form_data.reference_number }}<br>
+        </div>
+
+        <!-- Section 4: Court case details -->
+        <div class="section">
+            <label>Does this matter relate to a court case?</label> {{ form_data.related_to_court_case }}<br>
+            <label>Name of Case:</label> {{ form_data.case_name }}<br>
+            <label>Name of Court:</label> {{ form_data.court_name }}<br>
+            <label>Court Reference Number:</label> {{ form_data.court_reference_number }}<br>
+        </div>
+
+        <!-- Section 5: Relationship to the case -->
+        <div class="section">
+            <label>Your relationship to the case:</label> {{ form_data.relationship_to_case }}<br>
+            <label>Were you a Litigant in person?</label> {{ form_data.litigant_in_person }}<br>
+            <label>Is the case ongoing?</label> {{ form_data.case_ongoing }}<br>
+        </div>
+
+        <!-- Section 6: Event details -->
+        <div class="section">
+            <label>Date of Last Occurrence:</label> {{ form_data.last_occurrence }}<br>
+            <label>Event Information:</label><br>
+            <p>{{ form_data.event_information }}</p><br>
+        </div>
+
+        <!-- Section 7: Witnesses -->
+        <div class="section">
+            <label>Name of Witness (if applicable):</label> {{ form_data.witness_name }}<br>
+            <label>Email of Witness (if applicable):</label> {{ form_data.witness_email }}<br>
+            <label>Phone Number of Witness (if applicable):</label> {{ form_data.witness_phone_number }}<br>
+            <label>Have they given consent to be contacted by the BSB?</label> {{ form_data.witness_consent }}<br>
+        </div>
+
+        <!-- Section 8: Other information -->
+        <div class="section">
+            <label>Other Information:</label><br>
+            <p>{{ form_data.other_information }}</p><br>
+        </div>
+
+        <!-- Section 9: Personal details -->
+        <div class="section">
+            <label>Your Title:</label> {{ form_data.your_title }}<br>
+            <label>Your Name:</label> {{ form_data.your_name }}<br>
+            <label>Your Email:</label> {{ form_data.your_email }}<br>
+            <label>Your Phone Number:</label> {{ form_data.your_phone_number }}<br>
+            <label>Your Address 1:</label> {{ form_data.your_address1 }}<br>
+            <label>Your Address 2:</label> {{ form_data.your_address2 }}<br>
+            <label>Your Address 3:</label> {{ form_data.your_address3 }}<br>
+            <label>Your Postcode:</label> {{ form_data.your_postcode }}<br>
+        </div>
+
+        <!-- Section 10: Communication preferences -->
+        <div class="section">
+            <label>Do you have any specific communication needs?</label> {{ form_data.communication_needs }}<br>
+            <label>Preferred method of contact:</label> {{ form_data.preferred_contact_method }}<br>
+        </div>
+
+        <!-- Section 11: Declaration -->
+        <div class="section">
+            <label>Declaration:</label> {{ form_data.declaration }}<br>
+        </div>
+
+    </div>
+</body>
+</html>

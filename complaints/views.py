@@ -1,12 +1,33 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from .models import PastCase
-from .forms import ComplaintForm
+from .forms import ComplaintForm, WhoAreYouReportingForm, JCIOForm,  BarristerForm
 from django.db.models import Q
 import os
 from django.http import HttpResponse
 from docx import Document
 from django.conf import settings
+from weasyprint import HTML
+from django.template.loader import render_to_string
+
+
+def who_are_you_reporting(request):
+    if request.method == 'POST':
+        form = WhoAreYouReportingForm(request.POST)
+        if form.is_valid():
+            report_type = form.cleaned_data['report_type']
+            
+            # Redirect to the appropriate form based on user selection
+            if report_type == 'solicitor':
+                return redirect('solicitor_form')  # URL for solicitor (SRA) form
+            elif report_type == 'barrister':
+                return redirect('barrister_form')  # URL for barrister (BSB) form
+            elif report_type == 'judge':
+                return redirect('judge_form')  # URL for judge form
+    else:
+        form = WhoAreYouReportingForm()
+    
+    return render(request, 'complaints/who_are_you_reporting.html', {'form': form})
 
 def classify_complaint(complaint_text):
     if "solicitor" in complaint_text.lower():
@@ -149,3 +170,82 @@ def download_form(request, file_path):
 
     # Serve the document as a downloadable file
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=os.path.basename(file_path))
+
+
+def jcio_form(request):
+    if request.method == 'POST':
+        form = JCIOForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Create PDF from form data
+            form_data = form.cleaned_data
+            complaint_text = form.cleaned_data['complaint_details']
+            complaint_category = classify_complaint(complaint_text)
+
+            if complaint_category == "unknown":
+                return render(request, 'complaints/error.html', {
+                    "error_message": "Complaint category could not be identified."
+                })
+
+            similar_cases = find_similar_cases(complaint_category, complaint_text)
+            breaches = check_for_breaches(complaint_text)
+            html_string = render_to_string('complaints/jcio_pdf_template.html', {'form_data': form_data})
+            pdf_file = HTML(string=html_string).write_pdf()
+
+            # Save the PDF to the media directory
+            pdf_filename = os.path.join(settings.MEDIA_ROOT, f'jcio_complaint_{form_data["your_name"]}.pdf')
+            with open(pdf_filename, 'wb') as f:
+                f.write(pdf_file)
+
+            # Redirect to a success page or provide a download link
+            return render(request, 'complaints/complaint_results.html', {
+                "complaint_category": complaint_category,
+                "similar_cases": similar_cases,
+                "breaches": breaches,
+                "complaint_text": complaint_text,
+                "populated_form_path": pdf_filename,  # Pass the path for the download
+            })  # Change to the correct URL
+    else:
+        form = JCIOForm()
+
+    return render(request, 'complaints/jcio_form.html', {'form': form})
+
+def barrister_form(request):
+    if request.method == 'POST':
+        form = BarristerForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Create PDF from form data
+            form_data = form.cleaned_data
+            complaint_text = form.cleaned_data['event_information']
+            complaint_category = classify_complaint(complaint_text)
+
+            if complaint_category == "unknown":
+                return render(request, 'complaints/error.html', {
+                    "error_message": "Complaint category could not be identified."
+                })
+
+            similar_cases = find_similar_cases(complaint_category, complaint_text)
+            breaches = check_for_breaches(complaint_text)
+            html_string = render_to_string('complaints/barrister_pdf_template.html', {'form_data': form_data})
+            pdf_file = HTML(string=html_string).write_pdf()
+
+            # Save the PDF to the media directory
+            pdf_filename = os.path.join(settings.MEDIA_ROOT, f'barrister_complaint_{form_data["barrister_name"]}.pdf')
+            with open(pdf_filename, 'wb') as f:
+                f.write(pdf_file)
+
+            # Redirect to a success page or provide a download link
+            return render(request, 'complaints/complaint_results.html', {
+                "complaint_category": complaint_category,
+                "similar_cases": similar_cases,
+                "breaches": breaches,
+                "complaint_text": complaint_text,
+                "populated_form_path": pdf_filename,  # Pass the path for the download
+            })  # Change to the correct URL
+    else:
+        form = BarristerForm()
+
+    return render(request, 'complaints/barrister_form.html', {'form': form})
+
+
+def success_page(request):
+    return render(request, 'complaints/success.html')  #

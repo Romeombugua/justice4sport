@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { color: #333; }
+        .container { margin: 20px; }
+        .section { margin-bottom: 20px; }
+        label { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JCIO Complaint</h1>
+        <div class="section">
+            <label>Name:</label> {{ form_data.your_name }}<br>
+            <label>Hearing Venue:</label> {{ form_data.hearing_venue }}<br>
+            <label>Judicial Office Holder:</label> {{ form_data.judicial_officer }}<br>
+            <label>Hearing Number:</label> {{ form_data.hearing_number }}<br>
+            <label>Date of Alleged Misconduct:</label> {{ form_data.misconduct_date }}<br>
+            <label>Details of Complaint:</label><br>
+            <p>{{ form_data.complaint_details }}</p><br>
+            <label>Supporting Document:</label> {{ form_data.supporting_document }}<br>
+        </div>
+    </div>
+</body>
+</html>
