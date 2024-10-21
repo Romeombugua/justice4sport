@@ -5,12 +5,14 @@ class WhoAreYouReportingForm(forms.Form):
     REPORT_CHOICES = [
         ('solicitor', 'Solicitor'),
         ('barrister', 'Barrister'),
-        ('judge', 'Judge')
+        ('judge', 'Judge'),
+        ('newspaper', 'Newspaper'),
+        ('bank', 'Bank'),
     ]
     
     report_type = forms.ChoiceField(choices=REPORT_CHOICES, label="Who are you reporting?", widget=forms.RadioSelect)
 
-class ComplaintForm(forms.Form):
+class SolicitorForm(forms.Form):
     TITLE_CHOICES = [
         ('Mr', 'Mr'),
         ('Mrs', 'Mrs'),
@@ -55,11 +57,20 @@ class ComplaintForm(forms.Form):
     
     
 class BarristerForm(forms.Form):
+    # Section 9: Personal details (optional for anonymous reporting)
+    your_title = forms.ChoiceField(choices=[('Mr', 'Mr'), ('Mrs', 'Mrs'), ('Ms', 'Ms'), ('Miss', 'Miss'), ('Other', 'Other')], label="Your Title", required=False)
+    your_name = forms.CharField(label="Your Name", max_length=2000000, required=False)
+    your_email = forms.EmailField(label="Your Email", required=False)
+    your_phone_number = forms.CharField(label="Your Phone Number", max_length=200000, required=False)
+    your_address1 = forms.CharField(label="Your Address Line", max_length=2000000, required=False)
+    # your_address2 = forms.CharField(label="Your Address Line 2", max_length=2000000, required=False)
+    # your_address3 = forms.CharField(label="Your Address Line 3", max_length=2000000, required=False)
+    your_postcode = forms.CharField(label="Your Postcode", max_length=200000, required=False)
     # Section 1: Who you're reporting
     barrister_name = forms.CharField(label="Name of barrister/chambers/entity", max_length=2000000)
-    address1 = forms.CharField(label="Address 1 of barrister/body", max_length=2000000)
-    address2 = forms.CharField(label="Address 2 of barrister/body", max_length=2000000, required=False)
-    address3 = forms.CharField(label="Address 3 of barrister/body", max_length=2000000, required=False)
+    address1 = forms.CharField(label="Address of barrister/body", max_length=2000000)
+    # address2 = forms.CharField(label="Address 2 of barrister/body", max_length=2000000, required=False)
+    # address3 = forms.CharField(label="Address 3 of barrister/body", max_length=2000000, required=False)
     postcode = forms.CharField(label="Postcode of barrister/body", max_length=200000)
     email = forms.EmailField(label="Email of barrister/body")
     phone_number = forms.CharField(label="Phone number of barrister/body", max_length=200000)
@@ -69,9 +80,9 @@ class BarristerForm(forms.Form):
     
     # Additional details for more barristers (conditionally required)
     second_barrister_name = forms.CharField(label="Name of second barrister/chambers/entity", max_length=2000000, required=False)
-    second_address1 = forms.CharField(label="Address 1 of second barrister/body", max_length=2000000, required=False)
-    second_address2 = forms.CharField(label="Address 2 of second barrister/body", max_length=2000000, required=False)
-    second_address3 = forms.CharField(label="Address 3 of second barrister/body", max_length=2000000, required=False)
+    second_address1 = forms.CharField(label="Address of second barrister/body", max_length=2000000, required=False)
+    # second_address2 = forms.CharField(label="Address 2 of second barrister/body", max_length=2000000, required=False)
+    # second_address3 = forms.CharField(label="Address 3 of second barrister/body", max_length=2000000, required=False)
     second_postcode = forms.CharField(label="Postcode of second barrister/body", max_length=200000, required=False)
     second_email = forms.EmailField(label="Email of second barrister/body", required=False)
     second_phone_number = forms.CharField(label="Phone number of second barrister/body", max_length=200000, required=False)
@@ -114,15 +125,7 @@ class BarristerForm(forms.Form):
     # supporting_documents = forms.FileField(label="Please give us any supporting documentation", required=False)
     other_information = forms.CharField(label="Is there any other information you wish to add?", widget=forms.Textarea, required=False)
 
-    # Section 9: Personal details (optional for anonymous reporting)
-    your_title = forms.ChoiceField(choices=[('Mr', 'Mr'), ('Mrs', 'Mrs'), ('Ms', 'Ms'), ('Miss', 'Miss'), ('Other', 'Other')], label="Your Title", required=False)
-    your_name = forms.CharField(label="Your Name", max_length=2000000, required=False)
-    your_email = forms.EmailField(label="Your Email", required=False)
-    your_phone_number = forms.CharField(label="Your Phone Number", max_length=200000, required=False)
-    your_address1 = forms.CharField(label="Your Address Line 1", max_length=2000000, required=False)
-    your_address2 = forms.CharField(label="Your Address Line 2", max_length=2000000, required=False)
-    your_address3 = forms.CharField(label="Your Address Line 3", max_length=2000000, required=False)
-    your_postcode = forms.CharField(label="Your Postcode", max_length=200000, required=False)
+
 
     # Section 10: Communication preferences
     communication_needs = forms.ChoiceField(choices=[('Yes', 'Yes'), ('No', 'No')], label="Do you have any specific communication needs?", widget=forms.RadioSelect, required=False)
@@ -133,6 +136,17 @@ class BarristerForm(forms.Form):
 
 
 class JCIOForm(forms.Form):
+    
+        # Personal information fields
+    your_title = forms.ChoiceField(choices=[('Mr', 'Mr'), ('Mrs', 'Mrs'), ('Ms', 'Ms'), ('Miss', 'Miss'), ('Other', 'Other')], label="Your Title", required=False)
+    your_name = forms.CharField(label="Your Name", max_length=2000000, required=False)
+    your_email = forms.EmailField(label="Your Email", required=False)
+    your_phone_number = forms.CharField(label="Your Phone Number", max_length=200000, required=False)
+    your_address1 = forms.CharField(label="Your Address Line", max_length=2000000, required=False)
+    # your_address2 = forms.CharField(label="Your Address Line 2", max_length=2000000, required=False)
+    # your_address3 = forms.CharField(label="Your Address Line 3", max_length=2000000, required=False)
+    your_postcode = forms.CharField(label="Your Postcode", max_length=200000, required=False)
+    
     hearing_date = forms.DateField(
         label="Hearing Date",
         widget=forms.DateInput(attrs={'type': 'date'}),
@@ -175,5 +189,53 @@ class JCIOForm(forms.Form):
         required=True
     )
 
-    # Personal information fields
-    your_name = forms.CharField(label="Your Name", max_length=2000000, required=True)
+class NewspaperForm(forms.Form):
+    your_title = forms.ChoiceField(choices=[('Mr', 'Mr'), ('Mrs', 'Mrs'), ('Ms', 'Ms'), ('Miss', 'Miss'), ('Other', 'Other')], label="Your Title", required=False)
+    full_name = forms.CharField(max_length=255, label="Full Name")
+    full_address = forms.CharField(widget=forms.Textarea, label="Full Address")
+    email_address = forms.EmailField(label="Email Address")
+    mobile_phone = forms.CharField(max_length=15, label="Mobile Phone")
+    complain_on_behalf = forms.CharField(widget=forms.Textarea, label="Are you making a complaint on behalf of someone else? (If so enter their full name, postal address & telephone number)", required=False)
+    relationship_to_person = forms.CharField(max_length=255, label="Your relationship to the person you want to complain about", required=False)
+    consent_to_complain = forms.BooleanField(label="Have they agreed to you making this complaint on their behalf?", required=False)
+    
+    person_or_firm_complained_about = forms.CharField(max_length=255, label="Who are you complaining about? (Full name and position of the person, or the firm name)")
+    firm_postal_address = forms.CharField(widget=forms.Textarea, label="Full postal address of the firm")
+    type_of_work = forms.CharField(max_length=255, label="What kind of work was involved in the complaint?")
+    complaint_details = forms.CharField(widget=forms.Textarea, label="What are you complaining about? (Briefly describe the issue)")
+    
+    problem_awareness_date = forms.DateField(label="Date you first became aware of the problem", widget=forms.DateInput(attrs={'type': 'date'}))
+    impact_on_you = forms.CharField(widget=forms.Textarea, label="What effect has this had on you?")
+    
+    complained_to_firm = forms.BooleanField(label="Have you complained to the person or firm involved?", required=False)
+    date_of_complaint = forms.DateField(label="When did you complain to the person or firm?", widget=forms.DateInput(attrs={'type': 'date'}), required=False)
+    firm_response = forms.CharField(widget=forms.Textarea, label="What response have you had to your complaint from the person or firm?", required=False)
+    firm_actions = forms.CharField(widget=forms.Textarea, label="Please describe what the person or firm involved has said or done about your complaint since you made it to them.", required=False)
+    
+    desired_resolution = forms.CharField(widget=forms.Textarea, label="What do you think the person or firm involved should have done to get you Justice?")
+
+
+class BankForm(forms.Form):
+    your_title = forms.ChoiceField(choices=[('Mr', 'Mr'), ('Mrs', 'Mrs'), ('Ms', 'Ms'), ('Miss', 'Miss'), ('Other', 'Other')], label="Your Title", required=False)
+    full_name = forms.CharField(max_length=255, label="Full Name")
+    full_address = forms.CharField(widget=forms.Textarea, label="Full Address")
+    email_address = forms.EmailField(label="Email Address")
+    mobile_phone = forms.CharField(max_length=15, label="Mobile Phone")
+    complain_on_behalf = forms.CharField(widget=forms.Textarea, label="Are you making a complaint on behalf of someone else? (If so enter their full name, postal address & telephone number)", required=False)
+    relationship_to_person = forms.CharField(max_length=255, label="Your relationship to the person you want to complain about", required=False)
+    consent_to_complain = forms.BooleanField(label="Have they agreed to you making this complaint on their behalf?", required=False)
+    
+    person_or_firm_complained_about = forms.CharField(max_length=255, label="Who are you complaining about? (Full name and position of the person, or the firm name)")
+    firm_postal_address = forms.CharField(widget=forms.Textarea, label="Full postal address of the firm")
+    type_of_work = forms.CharField(max_length=255, label="What kind of work was involved in the complaint?")
+    complaint_details = forms.CharField(widget=forms.Textarea, label="What are you complaining about? (Briefly describe the issue)")
+    
+    problem_awareness_date = forms.DateField(label="Date you first became aware of the problem", widget=forms.DateInput(attrs={'type': 'date'}))
+    impact_on_you = forms.CharField(widget=forms.Textarea, label="What effect has this had on you?")
+    
+    complained_to_firm = forms.BooleanField(label="Have you complained to the person or firm involved?", required=False)
+    date_of_complaint = forms.DateField(label="When did you complain to the person or firm?", widget=forms.DateInput(attrs={'type': 'date'}), required=False)
+    firm_response = forms.CharField(widget=forms.Textarea, label="What response have you had to your complaint from the person or firm?", required=False)
+    firm_actions = forms.CharField(widget=forms.Textarea, label="Please describe what the person or firm involved has said or done about your complaint since you made it to them.", required=False)
+    
+    desired_resolution = forms.CharField(widget=forms.Textarea, label="What do you think the person or firm involved should have done to get you Justice?")
