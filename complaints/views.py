@@ -7,8 +7,6 @@ import os
 from django.http import HttpResponse
 from docx import Document
 from django.conf import settings
-from weasyprint import HTML
-from django.template.loader import render_to_string
 
 
 def who_are_you_reporting(request):
