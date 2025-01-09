@@ -1,5 +1,6 @@
 from django.urls import path
 from complaints import views
+from .views import ContactSubmissionView
 
 urlpatterns = [
     path('', views.who_are_you_reporting, name='submit_complaint'),
@@ -10,4 +11,5 @@ urlpatterns = [
     path('judge_form/', views.jcio_form, name='judge_form'),
     path('download_form/<str:file_path>', views.download_form, name='download_form'),
     path('success/', views.success_page, name='success_page'),
+    path('contact/', ContactSubmissionView.as_view(), name='contact-api'),
 ]

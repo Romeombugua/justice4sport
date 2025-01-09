@@ -7,6 +7,10 @@ import os
 from django.http import HttpResponse
 from docx import Document
 from django.conf import settings
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import SubmissionSerializer
 
 
 def who_are_you_reporting(request):
@@ -404,3 +408,26 @@ def bank_form(request):
         form = BankForm()
 
     return render(request, 'complaints/bank_form.html', {'form': form})
+
+class ContactSubmissionView(APIView):
+    def post(self, request):
+        serializer = SubmissionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # Save the submission
+            # submission = serializer.save()
+            
+            # Optionally send an email notification
+            # send_mail(
+            #     subject=f'New Contact Form Submission: {submission.subject}',
+            #     message=f'Name: {submission.name}\nEmail: {submission.email}\nMessage: {submission.message}',
+            #     from_email=settings.DEFAULT_FROM_EMAIL,
+            #     recipient_list=[settings.ADMIN_EMAIL],  # Add this to your settings.py
+            #     fail_silently=True,
+            # )
+            
+            return Response({
+                'message': 'Thank you for your message. We will contact you soon.'
+            }, status=status.HTTP_201_CREATED)
+            
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
