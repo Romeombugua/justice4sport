@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import SubmissionSerializer
-
+from django.core.mail import send_mail
 
 def who_are_you_reporting(request):
     if request.method == 'POST':
@@ -409,25 +409,34 @@ def bank_form(request):
 
     return render(request, 'complaints/bank_form.html', {'form': form})
 
+    
 class ContactSubmissionView(APIView):
     def post(self, request):
         serializer = SubmissionSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            # Save the submission
-            # submission = serializer.save()
+            submission = serializer.save()
             
-            # Optionally send an email notification
-            # send_mail(
-            #     subject=f'New Contact Form Submission: {submission.subject}',
-            #     message=f'Name: {submission.name}\nEmail: {submission.email}\nMessage: {submission.message}',
-            #     from_email=settings.DEFAULT_FROM_EMAIL,
-            #     recipient_list=[settings.ADMIN_EMAIL],  # Add this to your settings.py
-            #     fail_silently=True,
-            # )
+            # Email mapping
+            EMAIL_MAPPING = {
+                'justiceforsport': 'justiceforsport@gmail.com',
+                'litsport': 'engagelitsport@gmail.com',
+                'stopitcrew': 'stopitcrew@gmail.com'
+            }
             
-            return Response({
-                'message': 'Thank you for your message. We will contact you soon.'
-            }, status=status.HTTP_201_CREATED)
+            # Determine recipient email based on site
+            site = submission.site.lower() if submission.site else ''
+            recipient_email = next(
+                (email for site_key, email in EMAIL_MAPPING.items() if site_key in site),
+                'justiceforsport@gmail.com'  # default recipient
+            )
             
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Send email
+            send_mail(
+                subject=f'New message from {submission.name} on {submission.site}',
+                message=f'Name: {submission.name}\nEmail: {submission.email}\nAddress: {submission.address}\nMessage: {submission.message}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[recipient_email],
+            )
+
+            return Response({'message': 'Success'})
+        return Response(serializer.errors, status=400)
