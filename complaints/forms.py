@@ -48,7 +48,7 @@ class SolicitorForm(forms.Form):
     individual_acting_for = forms.CharField(label="Who is the individual acting for (if applicable)?", max_length=2000000, required=False)
     
     # Details of the report (main complaint text)
-    complaint = forms.CharField(label='Details of your report', widget=forms.Textarea, help_text='Please tell us your concerns as clearly as possible. \n\tProvide as much relevant information as possible as this is what we will use to assess your report. \n\tInclude dates where appropriate.\n\t If you are reporting more than one individual/firm, please make clear what you think each has done wrong. If you have already contacted another organisation about this matter please tell us the outcome.')
+    complaint = forms.CharField(label='Details of your report',max_length=1000000000, widget=forms.Textarea, help_text='Please tell us your concerns as clearly as possible. \n\tProvide as much relevant information as possible as this is what we will use to assess your report. \n\tInclude dates where appropriate.\n\t If you are reporting more than one individual/firm, please make clear what you think each has done wrong. If you have already contacted another organisation about this matter please tell us the outcome.')
     
     # Signature and Date
     signature = forms.CharField(label='Your Signature', max_length=100000000)
@@ -113,7 +113,7 @@ class BarristerForm(forms.Form):
 
     # Section 6: Event details
     last_occurrence = forms.DateField(label="Date of last occurrence", widget=forms.DateInput(attrs={'type': 'date'}))
-    event_information = forms.CharField(label="Please set out as clearly as possible the information you want to tell us", widget=forms.Textarea)
+    event_information = forms.CharField(label="Please set out as clearly as possible the information you want to tell us", widget=forms.Textarea, max_length=1000000000)
 
     # Section 7: Additional witnesses
     witness_name = forms.CharField(label="Name of witness (if applicable)", max_length=2000000, required=False)
@@ -164,7 +164,8 @@ class JCIOForm(forms.Form):
         label="Details of Complaint",
         widget=forms.Textarea,
         help_text="Please give specific examples of the conduct that you are complaining about.",
-        required=True
+        required=True,
+        max_length=1000000000
     )
     
     # Optional field for multiple dates of misconduct
@@ -202,7 +203,7 @@ class NewspaperForm(forms.Form):
     person_or_firm_complained_about = forms.CharField(max_length=255, label="Who are you complaining about? (Full name and position of the person, or the firm name)")
     firm_postal_address = forms.CharField(widget=forms.Textarea, label="Full postal address of the firm")
     type_of_work = forms.CharField(max_length=255, label="What kind of work was involved in the complaint?")
-    complaint_details = forms.CharField(widget=forms.Textarea, label="What are you complaining about? (Briefly describe the issue)")
+    complaint_details = forms.CharField(widget=forms.Textarea, label="What are you complaining about? (Briefly describe the issue)", max_length=1000000000)
     
     problem_awareness_date = forms.DateField(label="Date you first became aware of the problem", widget=forms.DateInput(attrs={'type': 'date'}))
     impact_on_you = forms.CharField(widget=forms.Textarea, label="What effect has this had on you?")
@@ -228,7 +229,7 @@ class BankForm(forms.Form):
     person_or_firm_complained_about = forms.CharField(max_length=255, label="Who are you complaining about? (Full name and position of the person, or the firm name)")
     firm_postal_address = forms.CharField(widget=forms.Textarea, label="Full postal address of the firm")
     type_of_work = forms.CharField(max_length=255, label="What kind of work was involved in the complaint?")
-    complaint_details = forms.CharField(widget=forms.Textarea, label="What are you complaining about? (Briefly describe the issue)")
+    complaint_details = forms.CharField(widget=forms.Textarea, label="What are you complaining about? (Briefly describe the issue)", max_length=1000000000)
     
     problem_awareness_date = forms.DateField(label="Date you first became aware of the problem", widget=forms.DateInput(attrs={'type': 'date'}))
     impact_on_you = forms.CharField(widget=forms.Textarea, label="What effect has this had on you?")
