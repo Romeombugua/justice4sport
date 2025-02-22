@@ -495,7 +495,8 @@ class QueryView(APIView):
             prompt = f"Use the following document context to answer the query:\n\n{context}\n\nQuery: {query}"
             
             try:
-                openai.api_key = "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"
+                api_key = settings.OPENAI_API_KEY
+                openai.api_key = api_key
                 response = openai.chat.completions.create(
                     model="gpt-4",
                     messages=[{"role": "user", "content": prompt}]
