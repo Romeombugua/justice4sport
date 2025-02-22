@@ -1,6 +1,6 @@
 from django.urls import path
 from complaints import views
-from .views import ContactSubmissionView
+from .views import ContactSubmissionView, DocumentUploadView, QueryView
 
 urlpatterns = [
     path('', views.who_are_you_reporting, name='submit_complaint'),
@@ -12,4 +12,8 @@ urlpatterns = [
     path('download_form/<str:file_path>', views.download_form, name='download_form'),
     path('success/', views.success_page, name='success_page'),
     path('contact/', ContactSubmissionView.as_view(), name='contact-api'),
+    path('documents/', DocumentUploadView.as_view(), name='document-upload'),
+    path('query/', QueryView.as_view(), name='query'),
 ]
+
+

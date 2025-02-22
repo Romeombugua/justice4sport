@@ -12,6 +12,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import SubmissionSerializer
 from django.core.mail import send_mail
+from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import DocumentSerializer, QuerySerializer
+from .models import Document
+from .utils import DocumentProcessor, QueryProcessor
+import openai
+from django.conf import settings
 
 def who_are_you_reporting(request):
     if request.method == 'POST':
@@ -440,3 +449,63 @@ class ContactSubmissionView(APIView):
 
             return Response({'message': 'Success'})
         return Response(serializer.errors, status=400)
+    
+    
+
+
+class DocumentUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request):
+        serializer = DocumentSerializer(data=request.data)
+        if serializer.is_valid():
+            document = serializer.save()
+            
+            # Process document
+            processor = DocumentProcessor()
+            try:
+                processor.process_document(document)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                document.delete()  # Clean up if processing fails
+                return Response(
+                    {'error': f'Document processing failed: {str(e)}'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class QueryView(APIView):
+    def post(self, request):
+        serializer = QuerySerializer(data=request.data)
+        if serializer.is_valid():
+            query = serializer.validated_data['query']
+            
+            # Get relevant chunks
+            processor = QueryProcessor()
+            relevant_chunks = processor.get_relevant_chunks(query)
+            
+            if not relevant_chunks:
+                return Response(
+                    {'error': 'No relevant information found'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # Query GPT
+            context = "\n\n".join(relevant_chunks)
+            prompt = f"Use the following document context to answer the query:\n\n{context}\n\nQuery: {query}"
+            
+            try:
+                openai.api_key = "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"
+                response = openai.chat.completions.create(
+                    model="gpt-4",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                answer = response.choices[0].message.content
+                return Response({'answer': answer})
+            except Exception as e:
+                return Response(
+                    {'error': f'OpenAI API error: {str(e)}'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
