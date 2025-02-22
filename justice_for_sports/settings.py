@@ -149,3 +149,4 @@ EMAIL_HOST_USER = 'justiceforsport@gmail.com'
 EMAIL_HOST_PASSWORD = 'klkbvoxdwbolnekg'
 DEFAULT_FROM_EMAIL = 'justiceforsport@gmail.com'
 
+OPENAI_API_KEY ="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"
